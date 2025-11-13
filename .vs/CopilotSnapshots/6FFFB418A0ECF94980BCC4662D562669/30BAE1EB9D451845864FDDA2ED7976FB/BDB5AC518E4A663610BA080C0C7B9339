@@ -1,0 +1,94 @@
+﻿Imports System.Net
+Imports System.IO
+Imports System.Text
+
+Module Program
+    Sub Main(args As String())
+        '==========================================================================
+        ' Microservicio TEMAS y AUTORES proyecto OverSounds - GPS 2025-2026
+        ' Creado por: José Manuel de Torres Dominguez
+        '==========================================================================
+        ' PARÁMETROS DE CONFIGURACIÓN
+        Dim host_ip As String = "localhost"
+        Dim host_port As Integer = 8080
+        Dim postgres_conn As String = ""
+        '==========================================================================
+
+        ' Crear el servidor HTTP
+        Dim listener As New HttpListener()
+        ' Configurar el prefijo (URL base) donde escuchar
+        listener.Prefixes.Add("http://" + host_ip + ":" + host_port)
+
+        Try
+            ' Iniciar el servidor
+            listener.Start()
+            Console.WriteLine("Servidor HTTP iniciado en http://" + host_ip + ":" + host_port)
+            Console.WriteLine("Presiona Ctrl+C para detener el servidor")
+            Console.WriteLine()
+
+            ' Bucle principal para manejar peticiones
+            While True
+                ' Esperar por una petición
+                Dim context As HttpListenerContext = listener.GetContext()
+                Dim request As HttpListenerRequest = context.Request
+                Dim response As HttpListenerResponse = context.Response
+
+                ' Mostrar información de la petición
+                Console.WriteLine($"Petición recibida: {request.HttpMethod} {request.Url.AbsolutePath}")
+
+                ' Manejar la petición según la ruta
+                HandleRequest(request, response)
+            End While
+
+        Catch ex As Exception
+            Console.WriteLine($"Error: {ex.Message}")
+        Finally
+            ' Detener el servidor
+            listener.Stop()
+            Console.WriteLine("Servidor detenido")
+        End Try
+    End Sub
+
+    Sub HandleRequest(request As HttpListenerRequest, response As HttpListenerResponse)
+        Dim responseString As String = ""
+        Dim statusCode As Integer = 200
+
+        ' Detectar la ruta personalizada
+        Select Case request.Url.AbsolutePath
+            Case "/foo/bar"
+                ' Manejar la ruta foo/bar
+                responseString = CreateJsonResponse("success", "Ruta foo/bar detectada correctamente")
+                response.ContentType = "application/json"
+                statusCode = 200
+
+            Case "/"
+                ' Ruta raíz
+                responseString = CreateJsonResponse("info", "Servidor HTTP funcionando. Prueba /foo/bar")
+                response.ContentType = "application/json"
+                statusCode = 200
+
+            Case Else
+                ' Ruta no encontrada
+                responseString = CreateJsonResponse("error", "Ruta no encontrada")
+                response.ContentType = "application/json"
+                statusCode = 404
+        End Select
+
+        ' Configurar la respuesta
+        response.StatusCode = statusCode
+        Dim buffer As Byte() = Encoding.UTF8.GetBytes(responseString)
+        response.ContentLength64 = buffer.Length
+
+        ' Enviar la respuesta
+        Dim output As Stream = response.OutputStream
+        output.Write(buffer, 0, buffer.Length)
+        output.Close()
+
+        Console.WriteLine($"Respuesta enviada: {statusCode} - {responseString}")
+        Console.WriteLine()
+    End Sub
+
+    Function CreateJsonResponse(status As String, message As String) As String
+        Return $"{{""status"": ""{status}"", ""message"": ""{message}""}}"
+    End Function
+End Module
