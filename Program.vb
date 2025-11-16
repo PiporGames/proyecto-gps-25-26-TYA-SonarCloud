@@ -18,7 +18,7 @@ Module Program
     Dim connectionString = "Host=pgnweb.ddns.net;Username=tya_admin;Password=12345;Database=tya"
     Dim db As NpgsqlDataSource = Nothing
     Dim ip_auth As String = "10.1.1.4:8080" ' IP del servicio de autenticación
-   '==========================================================================
+    '==========================================================================
 
     Sub Main(args As String())
         ' Conectarse a la base de datos PostgreSQL

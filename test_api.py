@@ -23,7 +23,7 @@ from typing import Dict, Any, Optional
 # CONFIGURACIÓN DEL SERVIDOR Y AUTENTICACIÓN
 # ============================================================================
 BASE_URL = "http://localhost:8081"
-AUTH_TOKEN = "cbd7bd346f747173e330817726756422b77b52c569c1d393a7b1b2271150058b990dc356814175a31565e5d334e2e74286c73a986b74070f912b00630c706a3e"  # ⚠️ REEMPLAZAR con un token válido de autenticación
+AUTH_TOKEN = "5fd4873371dce52f169709f70af07811a147b2933fc71989f501003ee7090171e6b17dc0c029df17f4270ab179c5e318b85571ba58bfb9f277dafc86e811f265"  # ⚠️ REEMPLAZAR con un token válido de autenticación
 
 # Colores para output en consola
 class Colors:
@@ -777,9 +777,9 @@ def test_filter_albums():
             success, response = make_request("GET", "/album/filter?genres=1", expected_status=200, requires_auth=False)
             if success and response:
                 try:
-                    results = response.json()
-                    album_in_results = any(item.get("albumId") == album_id for item in results)
-                    print_result(album_in_results, f"Álbum encontrado en filtro por género")
+                    results = response.json()  # Array de IDs
+                    album_in_results = album_id in results
+                    print_result(album_in_results, f"Álbum {album_id} encontrado en filtro por género")
                 except Exception as e:
                     print_result(False, f"Error al parsear respuesta: {e}")
             else:
@@ -1170,9 +1170,9 @@ def test_filter_merch():
         success, response = make_request("GET", f"/merch/filter?artists={artist_id}", expected_status=200, requires_auth=False)
         if success and response:
             try:
-                results = response.json()
-                merch_in_results = any(item.get("merchId") == merch_id for item in results)
-                print_result(merch_in_results, f"Merchandising encontrado en filtro por artista")
+                results = response.json()  # Array de IDs
+                merch_in_results = merch_id in results
+                print_result(merch_in_results, f"Merchandising {merch_id} encontrado en filtro por artista")
             except Exception as e:
                 print_result(False, f"Error al parsear respuesta: {e}")
         else:
@@ -1332,9 +1332,9 @@ def test_filter_artists():
         success, response = make_request("GET", "/artist/filter?genres=1", expected_status=200, requires_auth=False)
         if success and response:
             try:
-                results = response.json()
-                artist_in_results = any(item.get("artistId") == int(artist_id) for item in results)
-                print_result(artist_in_results, f"Artista encontrado en filtro por género")
+                results = response.json()  # Array de IDs
+                artist_in_results = int(artist_id) in results
+                print_result(artist_in_results, f"Artista {artist_id} encontrado en filtro por género")
             except Exception as e:
                 print_result(False, f"Error al parsear respuesta: {e}")
         else:
