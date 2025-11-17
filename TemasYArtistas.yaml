@@ -1183,8 +1183,8 @@ components:
           description: IDs of genres of the Song
         cover:
           type: string
-          description: base64 image of the Song cover
-          example: "data:image/png;base64,iVBORw0KGgoAAAAN..."
+          description: Base64-encoded image with data URI prefix for the Song cover. Format should be 'data:image/png;base64,<base64string>'
+          example: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAIAQMAAAD+wSzIAAAABlBMVEX///+/v7+jQ3Y5AAAADklEQVQI12P4AIX8EAgALgAD/aNpbtEAAAAASUVORK5CYII="
         price:
           type: number
           format: double
@@ -1243,8 +1243,8 @@ components:
           description: IDs of genres of the Song
         cover:
           type: string
-          description: Image file path for the Song cover
-          example: "/images/songs/california-girls-cover.jpg"
+          description: Base64-encoded image with data URI prefix for the Song cover. Format should be 'data:image/png;base64,<base64string>'
+          example: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAIAQMAAAD+wSzIAAAABlBMVEX///+/v7+jQ3Y5AAAADklEQVQI12P4AIX8EAgALgAD/aNpbtEAAAAASUVORK5CYII="
         price:
           type: number
           format: double
@@ -1321,8 +1321,8 @@ components:
           example: [1, 2, 3, 4, 5]
         cover:
           type: string
-          description: Image file path for the Album cover
-          example: "/images/albums/teenage-dream-cover.jpg"
+          description: Base64-encoded image with data URI prefix for the Album. Format should be 'data:image/png;base64,<base64string>' cover
+          example: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAIAQMAAAD+wSzIAAAABlBMVEX///+/v7+jQ3Y5AAAADklEQVQI12P4AIX8EAgALgAD/aNpbtEAAAAASUVORK5CYII="
         price:
           type: number
           format: double
@@ -1361,8 +1361,8 @@ components:
           example: [1, 2, 3, 4, 5]
         cover:
           type: string
-          description: Image file path for the Album cover
-          example: "/images/albums/teenage-dream-cover.jpg"
+          description: Base64-encoded image with data URI prefix for the Album. Format should be 'data:image/png;base64,<base64string>' cover
+          example: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAIAQMAAAD+wSzIAAAABlBMVEX///+/v7+jQ3Y5AAAADklEQVQI12P4AIX8EAgALgAD/aNpbtEAAAAASUVORK5CYII="
         price:
           type: number
           format: double
@@ -1398,8 +1398,8 @@ components:
           example: contact@katyperry.com
         artisticImage:
           type: string
-          description: base64 image of the Artist profile
-          example: "data:image/png;base64,iVBORw0KGgoAAAAN..."
+          description: Base64-encoded image with data URI prefix for the Artist profile. Format should be 'data:image/png;base64,<base64string>'
+          example: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAIAQMAAAD+wSzIAAAABlBMVEX///+/v7+jQ3Y5AAAADklEQVQI12P4AIX8EAgALgAD/aNpbtEAAAAASUVORK5CYII="
         socialMediaUrl:
           type: string
           format: uri
@@ -1453,8 +1453,8 @@ components:
           example: contact@katyperry.com
         artisticImage:
           type: string
-          description: Image file path for the Artist profile
-          example: "/images/artists/katy-perry-profile.jpg"
+          description: Base64-encoded image with data URI prefix for the Artist profile. Format should be 'data:image/png;base64,<base64string>'
+          example: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAIAQMAAAD+wSzIAAAABlBMVEX///+/v7+jQ3Y5AAAADklEQVQI12P4AIX8EAgALgAD/aNpbtEAAAAASUVORK5CYII="
         socialMediaUrl:
           type: string
           format: uri
@@ -1504,8 +1504,8 @@ components:
           example: 29.99
         cover:
           type: string
-          description: Image file path for the Merchandising item
-          example: "/images/merch/teenage-dream-tshirt.jpg"
+          description: Base64-encoded image with data URI prefix for the Merchandising item. Format should be 'data:image/png;base64,<base64string>'
+          example: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAIAQMAAAD+wSzIAAAABlBMVEX///+/v7+jQ3Y5AAAADklEQVQI12P4AIX8EAgALgAD/aNpbtEAAAAASUVORK5CYII="
 
     RegisterMerchandising:
       type: object
@@ -1537,8 +1537,8 @@ components:
           example: 29.99
         cover:
           type: string
-          description: Image file path for the Merchandising item
-          example: "/images/merch/teenage-dream-tshirt.jpg"
+          description: Base64-encoded image with data URI prefix for the Merchandising item. Format should be 'data:image/png;base64,<base64string>'
+          example: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAIAQMAAAD+wSzIAAAABlBMVEX///+/v7+jQ3Y5AAAADklEQVQI12P4AIX8EAgALgAD/aNpbtEAAAAASUVORK5CYII="
       required:
         - title
         - price

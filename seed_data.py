@@ -8,7 +8,7 @@ import requests
 import sys
 
 BASE_URL = "http://localhost:8081"
-AUTH_TOKEN = "07186e0e6e5a5691ba38fed320687429c98d965359762980a43472b51cf1cbd7e290f2bc16ec2bac8515a952881095ad20b654527a6e9d924f9bb123f2c164d0"
+AUTH_TOKEN = "15a0b7ab217fa2b366c1390a63aee560fdf7df95c16f2e29cb71d9a012dcb6ad38349d54d603cb0bf23a447125f1542be4aceeafa7b24d98056f9808373c0c85"
 cookies = {"oversound_auth": AUTH_TOKEN}
 
 def post(endpoint, data):
@@ -30,7 +30,7 @@ print("Creando artista...")
 artist = post("/artist/upload", {
     "artisticName": "Luna Eclipse",
     "artisticBiography": "Cantautora indie con influencias de rock alternativo y folk. Ganadora de múltiples premios, conocida por sus letras introspectivas y melodías envolventes.",
-    "artisticImage": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==",
+    "artisticImage": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAIAQMAAAD+wSzIAAAABlBMVEX///+/v7+jQ3Y5AAAADklEQVQI12P4AIX8EAgALgAD/aNpbtEAAAAASUVORK5CYII=",
     "artisticEmail": "contact@lunaeclipse.music",
     "socialMediaUrl": "https://instagram.com/lunaeclipseofficial",
     "userId": 1
@@ -42,9 +42,9 @@ print(f"✓ Artista creado (ID: {artist_id})")
 print("\nCreando singles...")
 singles = []
 single_data = [
-    {"title": "Midnight Dreams", "duration": 245, "price": 1.29, "trackId": 10001, "cover": "data:image/png;base64,iVBORw0KGg1"},
-    {"title": "Electric Heart", "duration": 198, "price": 0.99, "trackId": 10002, "cover": "data:image/png;base64,iVBORw0KGg2"},
-    {"title": "Neon Lights", "duration": 213, "price": 1.49, "trackId": 10003, "cover": "data:image/png;base64,iVBORw0KGg3"}
+    {"title": "Midnight Dreams", "duration": 245, "price": 1.29, "trackId": 10001, "cover": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAIAQMAAAD+wSzIAAAABlBMVEX///+/v7+jQ3Y5AAAADklEQVQI12P4AIX8EAgALgAD/aNpbtEAAAAASUVORK5CYII="},
+    {"title": "Electric Heart", "duration": 198, "price": 0.99, "trackId": 10002, "cover": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAIAQMAAAD+wSzIAAAABlBMVEX///+/v7+jQ3Y5AAAADklEQVQI12P4AIX8EAgALgAD/aNpbtEAAAAASUVORK5CYII="},
+    {"title": "Neon Lights", "duration": 213, "price": 1.49, "trackId": 10003, "cover": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAIAQMAAAD+wSzIAAAABlBMVEX///+/v7+jQ3Y5AAAADklEQVQI12P4AIX8EAgALgAD/aNpbtEAAAAASUVORK5CYII="}
 ]
 for sd in single_data:
     s = post("/song/upload", {**sd, "genres": genre_ids[:2], "description": f"Single lanzado en 2024"})
@@ -56,7 +56,7 @@ print("\nCreando álbum vacío...")
 empty_album = post("/album/upload", {
     "title": "Untitled Project (Coming Soon)",
     "songs": [],
-    "cover": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8/5+hHgAHggJ/PchI7wAAAABJRU5ErkJggg==",
+    "cover": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAIAQMAAAD+wSzIAAAABlBMVEX///+/v7+jQ3Y5AAAADklEQVQI12P4AIX8EAgALgAD/aNpbtEAAAAASUVORK5CYII=",
     "price": 0.01,
     "releaseDate": "2025-12-31"
 })
@@ -79,7 +79,7 @@ album1_data = [
 album1 = post("/album/upload", {
     "title": "Shadows & Echoes",
     "songs": [],
-    "cover": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJALBUM1",
+    "cover": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAIAQMAAAD+wSzIAAAABlBMVEX///+/v7+jQ3Y5AAAADklEQVQI12P4AIX8EAgALgAD/aNpbtEAAAAASUVORK5CYII=",
     "price": 9.99,
     "releaseDate": "2023-03-15"
 })
@@ -93,7 +93,7 @@ for sd in album1_data:
         "price": sd["price"],
         "trackId": sd["trackId"],
         "genres": genre_ids[:2],
-        "cover": f"data:image/png;base64,song{sd['trackId']}",
+        "cover": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAIAQMAAAD+wSzIAAAABlBMVEX///+/v7+jQ3Y5AAAADklEQVQI12P4AIX8EAgALgAD/aNpbtEAAAAASUVORK5CYII=",
         "description": f"Track {sd['order']} from Shadows & Echoes",
         "albumId": album1_id,
         "albumOrder": sd["order"]
@@ -117,7 +117,7 @@ album2_data = [
 album2 = post("/album/upload", {
     "title": "Cosmic Journey",
     "songs": [],
-    "cover": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJCOSMIC1",
+    "cover": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAIAQMAAAD+wSzIAAAABlBMVEX///+/v7+jQ3Y5AAAADklEQVQI12P4AIX8EAgALgAD/aNpbtEAAAAASUVORK5CYII=",
     "price": 7.99,
     "releaseDate": "2024-06-20"
 })
@@ -130,7 +130,7 @@ for sd in album2_data:
         "price": sd["price"],
         "trackId": sd["trackId"],
         "genres": genre_ids[-2:] if len(genre_ids) >= 2 else genre_ids,
-        "cover": f"data:image/png;base64,cosmic{sd['trackId']}",
+        "cover": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAIAQMAAAD+wSzIAAAABlBMVEX///+/v7+jQ3Y5AAAADklEQVQI12P4AIX8EAgALgAD/aNpbtEAAAAASUVORK5CYII=",
         "description": f"Track {sd['order']} from Cosmic Journey - An electronic odyssey",
         "albumId": album2_id,
         "albumOrder": sd["order"]
@@ -155,7 +155,7 @@ hits_songs = [
 album_hits = post("/album/upload", {
     "title": "Greatest Hits - Best of Luna Eclipse",
     "songs": hits_songs,
-    "cover": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJHITS1",
+    "cover": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAIAQMAAAD+wSzIAAAABlBMVEX///+/v7+jQ3Y5AAAADklEQVQI12P4AIX8EAgALgAD/aNpbtEAAAAASUVORK5CYII=",
     "price": 12.99,
     "releaseDate": "2024-11-01"
 })
@@ -165,11 +165,11 @@ print(f"✓ Álbum 'Greatest Hits' (ID: {album_hits_id}) con {len(hits_songs)} c
 # Crear merchandising
 print("\nCreando merchandising...")
 merch_data = [
-    {"title": "Luna Eclipse - Official T-Shirt", "description": "Camiseta oficial negra con logo holográfico. 100% algodón orgánico. Tallas disponibles: S, M, L, XL", "price": 29.99, "cover": "data:image/png;base64,merchTshirt"},
-    {"title": "Shadows & Echoes Vinyl LP", "description": "Edición limitada en vinilo de 180g. Incluye poster exclusivo y código de descarga digital.", "price": 34.99, "cover": "data:image/png;base64,merchVinyl"},
-    {"title": "Luna Eclipse Tote Bag", "description": "Bolsa de tela resistente con diseño exclusivo. Perfecta para conciertos y uso diario.", "price": 19.99, "cover": "data:image/png;base64,merchBag"},
-    {"title": "Cosmic Journey Hoodie", "description": "Sudadera con capucha premium. Diseño bordado del álbum Cosmic Journey. 80% algodón, 20% poliéster.", "price": 49.99, "cover": "data:image/png;base64,merchHoodie"},
-    {"title": "Luna Eclipse Poster Set", "description": "Set de 3 posters de alta calidad (30x40cm). Diseños exclusivos de los álbumes y arte conceptual.", "price": 24.99, "cover": "data:image/png;base64,merchPosters"}
+    {"title": "Luna Eclipse - Official T-Shirt", "description": "Camiseta oficial negra con logo holográfico. 100% algodón orgánico. Tallas disponibles: S, M, L, XL", "price": 29.99, "cover": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAIAQMAAAD+wSzIAAAABlBMVEX///+/v7+jQ3Y5AAAADklEQVQI12P4AIX8EAgALgAD/aNpbtEAAAAASUVORK5CYII="},
+    {"title": "Shadows & Echoes Vinyl LP", "description": "Edición limitada en vinilo de 180g. Incluye poster exclusivo y código de descarga digital.", "price": 34.99, "cover": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAIAQMAAAD+wSzIAAAABlBMVEX///+/v7+jQ3Y5AAAADklEQVQI12P4AIX8EAgALgAD/aNpbtEAAAAASUVORK5CYII="},
+    {"title": "Luna Eclipse Tote Bag", "description": "Bolsa de tela resistente con diseño exclusivo. Perfecta para conciertos y uso diario.", "price": 19.99, "cover": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAIAQMAAAD+wSzIAAAABlBMVEX///+/v7+jQ3Y5AAAADklEQVQI12P4AIX8EAgALgAD/aNpbtEAAAAASUVORK5CYII="},
+    {"title": "Cosmic Journey Hoodie", "description": "Sudadera con capucha premium. Diseño bordado del álbum Cosmic Journey. 80% algodón, 20% poliéster.", "price": 49.99, "cover": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAIAQMAAAD+wSzIAAAABlBMVEX///+/v7+jQ3Y5AAAADklEQVQI12P4AIX8EAgALgAD/aNpbtEAAAAASUVORK5CYII="},
+    {"title": "Luna Eclipse Poster Set", "description": "Set de 3 posters de alta calidad (30x40cm). Diseños exclusivos de los álbumes y arte conceptual.", "price": 24.99, "cover": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAIAQMAAAD+wSzIAAAABlBMVEX///+/v7+jQ3Y5AAAADklEQVQI12P4AIX8EAgALgAD/aNpbtEAAAAASUVORK5CYII="}
 ]
 
 for md in merch_data:

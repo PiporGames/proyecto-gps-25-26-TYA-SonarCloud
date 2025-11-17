@@ -434,7 +434,7 @@ Module Program
             Using cmd = db.CreateCommand("INSERT INTO canciones (titulo, descripcion, cover, track, duracion, fechalanzamiento, precio, albumog) VALUES (@titulo, @descripcion, @cover, @track, @duracion, @fecha, @precio, @albumog) RETURNING idcancion")
                 cmd.Parameters.AddWithValue("@titulo", title)
                 cmd.Parameters.AddWithValue("@descripcion", If(description, DBNull.Value))
-                cmd.Parameters.AddWithValue("@cover", cover)
+                cmd.Parameters.AddWithValue("@cover", StringToBytes(cover))
                 cmd.Parameters.AddWithValue("@track", trackId)
                 cmd.Parameters.AddWithValue("@duracion", duration)
                 cmd.Parameters.AddWithValue("@fecha", Date.Parse(releaseDate))
@@ -740,7 +740,8 @@ Module Program
                         While reader.Read()
                             schema("title") = reader.GetString(0)
                             schema("description") = If(reader.IsDBNull(1), Nothing, reader.GetString(1))
-                            schema("cover") = reader.GetString(2)
+                            Dim coverBytes As Byte() = CType(reader("cover"), Byte())
+                            schema("cover") = BytesToString(coverBytes)
                             schema("duration") = reader.GetInt32(3).ToString()
                             schema("releaseDate") = reader.GetDateTime(4).ToString("yyyy-MM-dd")
                             schema("price") = reader.GetDecimal(5).ToString()
@@ -852,7 +853,8 @@ Module Program
                         schema("songId") = action
                         schema("title") = reader.GetString(0)
                         schema("description") = If(reader.IsDBNull(1), Nothing, reader.GetString(1))
-                        schema("cover") = reader.GetString(2)
+                        Dim coverBytes As Byte() = CType(reader("cover"), Byte())
+                        schema("cover") = BytesToString(coverBytes)
                         schema("duration") = reader.GetInt32(3).ToString()
                         schema("releaseDate") = reader.GetDateTime(4).ToString("yyyy-MM-dd")
                         schema("price") = reader.GetDecimal(5).ToString()
@@ -1004,7 +1006,7 @@ Module Program
                 End If
                 If songData.ContainsKey("cover") Then
                     updates.Add("cover = @cover")
-                    cmd.Parameters.AddWithValue("@cover", songData("cover").GetString())
+                    cmd.Parameters.AddWithValue("@cover", StringToBytes(songData("cover").GetString()))
                 End If
                 If songData.ContainsKey("price") Then
                     updates.Add("precio = @precio")
@@ -1156,7 +1158,7 @@ Module Program
             Using cmd = db.CreateCommand("INSERT INTO albumes (titulo, descripcion, cover, fechalanzamiento, precio, precioauto) VALUES (@titulo, @descripcion, @cover, @fecha, @precio, @precioauto) RETURNING idalbum")
                 cmd.Parameters.AddWithValue("@titulo", title)
                 cmd.Parameters.AddWithValue("@descripcion", If(description, DBNull.Value))
-                cmd.Parameters.AddWithValue("@cover", cover)
+                cmd.Parameters.AddWithValue("@cover", StringToBytes(cover))
                 cmd.Parameters.AddWithValue("@fecha", Date.Parse(releaseDate))
                 cmd.Parameters.AddWithValue("@precio", price)
                 cmd.Parameters.AddWithValue("@precioauto", False)
@@ -1427,7 +1429,8 @@ Module Program
                         While reader.Read()
                             schema("title") = reader.GetString(0)
                             schema("description") = If(reader.IsDBNull(1), "", reader.GetString(1))
-                            schema("cover") = reader.GetString(2)
+                            Dim coverBytes As Byte() = CType(reader("cover"), Byte())
+                            schema("cover") = Convert.ToBase64String(coverBytes)
                             schema("releaseDate") = reader.GetDateTime(3).ToString("yyyy-MM-dd")
                             schema("price") = reader.GetDecimal(4).ToString()
                         End While
@@ -1515,7 +1518,8 @@ Module Program
                             schema("albumId") = action
                             schema("title") = reader.GetString(0)
                             schema("description") = If(reader.IsDBNull(1), "", reader.GetString(1))
-                            schema("cover") = reader.GetString(2)
+                            Dim coverBytes As Byte() = CType(reader("cover"), Byte())
+                            schema("cover") = Convert.ToBase64String(coverBytes)
                             schema("releaseDate") = reader.GetDateTime(3).ToString("yyyy-MM-dd")
                             schema("price") = reader.GetDecimal(4).ToString()
                         End While
@@ -1674,7 +1678,7 @@ Module Program
                 End If
                 If albumData.ContainsKey("cover") Then
                     updates.Add("cover = @cover")
-                    cmd.Parameters.AddWithValue("@cover", albumData("cover").GetString())
+                    cmd.Parameters.AddWithValue("@cover", StringToBytes(albumData("cover").GetString()))
                 End If
                 If albumData.ContainsKey("price") Then
                     updates.Add("precio = @precio")
@@ -1775,7 +1779,7 @@ Module Program
             Using cmd = db.CreateCommand("INSERT INTO merch (titulo, descripcion, cover, fechalanzamiento, precio) VALUES (@titulo, @descripcion, @cover, @fecha, @precio) RETURNING idmerch")
                 cmd.Parameters.AddWithValue("@titulo", title)
                 cmd.Parameters.AddWithValue("@descripcion", description)
-                cmd.Parameters.AddWithValue("@cover", cover)
+                cmd.Parameters.AddWithValue("@cover", StringToBytes(cover))
                 cmd.Parameters.AddWithValue("@fecha", Date.Parse(releaseDate))
                 cmd.Parameters.AddWithValue("@precio", price)
                 newMerchId = CInt(cmd.ExecuteScalar())
@@ -2006,7 +2010,8 @@ Module Program
                             schema("title") = reader.GetString(0)
                             schema("description") = reader.GetString(1)
                             schema("price") = reader.GetDecimal(2).ToString()
-                            schema("cover") = reader.GetString(3)
+                            Dim coverBytes As Byte() = CType(reader("cover"), Byte())
+                            schema("cover") = Convert.ToBase64String(coverBytes)
                             schema("releaseDate") = reader.GetDateTime(4).ToString("yyyy-MM-dd")
                         End While
                     Else
@@ -2068,7 +2073,8 @@ Module Program
                             schema("title") = reader.GetString(0)
                             schema("description") = reader.GetString(1)
                             schema("price") = reader.GetDecimal(2).ToString()
-                            schema("cover") = reader.GetString(3)
+                            Dim coverBytes As Byte() = CType(reader("cover"), Byte())
+                            schema("cover") = Convert.ToBase64String(coverBytes)
                             schema("releaseDate") = reader.GetDateTime(4).ToString("yyyy-MM-dd")
                         End While
                     Else
@@ -2182,7 +2188,7 @@ Module Program
                 End If
                 If merchData.ContainsKey("cover") Then
                     updates.Add("cover = @cover")
-                    cmd.Parameters.AddWithValue("@cover", merchData("cover").GetString())
+                    cmd.Parameters.AddWithValue("@cover", StringToBytes(merchData("cover").GetString()))
                 End If
                 If merchData.ContainsKey("releaseDate") Then
                     updates.Add("fechalanzamiento = @fecha")
@@ -2255,7 +2261,7 @@ Module Program
             Dim newArtistId As Integer
             Using cmd = db.CreateCommand("INSERT INTO artistas (nombre, imagen, bio, fechainicio, email, socialmediaurl, userid) VALUES (@nombre, @imagen, @bio, @fecha, @email, @socialmediaurl, @userid) RETURNING idartista")
                 cmd.Parameters.AddWithValue("@nombre", artisticName)
-                cmd.Parameters.AddWithValue("@imagen", If(image, DBNull.Value))
+                cmd.Parameters.AddWithValue("@imagen", If(image IsNot Nothing, StringToBytes(image), DBNull.Value))
                 cmd.Parameters.AddWithValue("@bio", biography)
                 cmd.Parameters.AddWithValue("@fecha", Date.Parse(registrationDate))
                 cmd.Parameters.AddWithValue("@email", artisticEmail)
@@ -2461,7 +2467,8 @@ Module Program
                     If reader.HasRows Then
                         While reader.Read()
                             schema("artisticName") = reader.GetString(0)
-                            schema("artisticImage") = reader.GetString(1)
+                            Dim imagenBytes As Byte() = CType(reader("imagen"), Byte())
+                            schema("artisticImage") = Convert.ToBase64String(imagenBytes)
                             schema("artisticBiography") = reader.GetString(2)
                             schema("registrationDate") = reader.GetDateTime(3).ToString("yyyy-MM-dd")
                             schema("artisticEmail") = If(reader.IsDBNull(4), Nothing, reader.GetString(4))
@@ -2548,7 +2555,8 @@ Module Program
                         While reader.Read()
                             schema("artistId") = action
                             schema("artisticName") = reader.GetString(0)
-                            schema("artisticImage") = reader.GetString(1)
+                            Dim imagenBytes As Byte() = CType(reader("imagen"), Byte())
+                            schema("artisticImage") = Convert.ToBase64String(imagenBytes)
                             schema("artisticBiography") = reader.GetString(2)
                             schema("registrationDate") = reader.GetDateTime(3).ToString("yyyy-MM-dd")
                             schema("artisticEmail") = If(reader.IsDBNull(4), Nothing, reader.GetString(4))
@@ -2666,7 +2674,7 @@ Module Program
                 End If
                 If artistData.ContainsKey("artisticImage") Then
                     updates.Add("imagen = @imagen")
-                    cmd.Parameters.AddWithValue("@imagen", artistData("artisticImage").GetString())
+                    cmd.Parameters.AddWithValue("@imagen", StringToBytes(artistData("artisticImage").GetString()))
                 End If
                 If artistData.ContainsKey("artisticBiography") Then
                     updates.Add("bio = @bio")
@@ -2729,5 +2737,48 @@ Module Program
             statusCode = HttpStatusCode.InternalServerError
         End Try
     End Sub
+
+    ' ==========================================================================
+    ' FUNCIONES HELPER PARA CONVERSIÓN DE IMÁGENES
+    ' ==========================================================================
+    
+    ''' <summary>
+    ''' Convierte una cadena a bytes. Soporta base64 puro o data URI completo.
+    ''' Si la conversión base64 falla, convierte como texto UTF8.
+    ''' </summary>
+    ''' <param name="input">Cadena a convertir (puede incluir prefijo data:image/...;base64,)</param>
+    ''' <returns>Array de bytes</returns>
+    Function StringToBytes(input As String) As Byte()
+        If String.IsNullOrEmpty(input) Then
+            Return New Byte() {}
+        End If
+
+        Try
+            ' Si tiene el prefijo data:image, extraer solo la parte base64
+            Dim base64String As String = input
+            If input.Contains(",") Then
+                ' Formato: data:image/png;base64,iVBORw0KGgo...
+                base64String = input.Substring(input.IndexOf(",") + 1)
+            End If
+
+            ' Intentar convertir desde base64
+            Return Convert.FromBase64String(base64String)
+        Catch ex As FormatException
+            ' Si falla, convertir como texto UTF8
+            Return Encoding.UTF8.GetBytes(input)
+        End Try
+    End Function
+
+    ''' <summary>
+    ''' Convierte bytes a cadena base64 con prefijo data URI.
+    ''' </summary>
+    ''' <param name="bytes">Array de bytes a convertir</param>
+    ''' <returns>Cadena en formato data:image/png;base64,...</returns>
+    Function BytesToString(bytes As Byte()) As String
+        If bytes Is Nothing OrElse bytes.Length = 0 Then
+            Return ""
+        End If
+        Return "data:image/png;base64," & Convert.ToBase64String(bytes)
+    End Function
 
 End Module

@@ -23,7 +23,7 @@ from typing import Dict, Any, Optional
 # CONFIGURACIÓN DEL SERVIDOR Y AUTENTICACIÓN
 # ============================================================================
 BASE_URL = "http://localhost:8081"
-AUTH_TOKEN = "5fd4873371dce52f169709f70af07811a147b2933fc71989f501003ee7090171e6b17dc0c029df17f4270ab179c5e318b85571ba58bfb9f277dafc86e811f265"  # ⚠️ REEMPLAZAR con un token válido de autenticación
+AUTH_TOKEN = "15a0b7ab217fa2b366c1390a63aee560fdf7df95c16f2e29cb71d9a012dcb6ad38349d54d603cb0bf23a447125f1542be4aceeafa7b24d98056f9808373c0c85"  # ⚠️ REEMPLAZAR con un token válido de autenticación
 
 # Colores para output en consola
 class Colors:
@@ -109,7 +109,7 @@ def test_unauthorized_access():
     song_data = {
         "title": "Unauthorized Song",
         "genres": [1],
-        "cover": "data:image/png;base64,test",
+        "cover": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAIAQMAAAD+wSzIAAAABlBMVEX///+/v7+jQ3Y5AAAADklEQVQI12P4AIX8EAgALgAD/aNpbtEAAAAASUVORK5CYII=",
         "price": 5.99,
         "trackId": 999999,
         "duration": 100
@@ -208,7 +208,7 @@ def test_list_songs():
         song_data = {
             "title": f"List Test Song {i+1}",
             "genres": [1],
-            "cover": "data:image/png;base64,test",
+            "cover": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAIAQMAAAD+wSzIAAAABlBMVEX///+/v7+jQ3Y5AAAADklEQVQI12P4AIX8EAgALgAD/aNpbtEAAAAASUVORK5CYII=",
             "price": 5.99,
             "trackId": 700001 + i,
             "duration": 180
@@ -270,7 +270,7 @@ def test_filter_songs():
     song_data = {
         "title": "Filter Test Song",
         "genres": [1, 2],
-        "cover": "data:image/png;base64,test",
+        "cover": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAIAQMAAAD+wSzIAAAABlBMVEX///+/v7+jQ3Y5AAAADklEQVQI12P4AIX8EAgALgAD/aNpbtEAAAAASUVORK5CYII=",
         "price": 7.99,
         "trackId": 800001,
         "duration": 200
@@ -331,7 +331,7 @@ def test_filter_songs_pagination():
         song_data = {
             "title": f"Pagination Test Song {i+1}",
             "genres": [1],
-            "cover": "data:image/png;base64,test",
+            "cover": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAIAQMAAAD+wSzIAAAABlBMVEX///+/v7+jQ3Y5AAAADklEQVQI12P4AIX8EAgALgAD/aNpbtEAAAAASUVORK5CYII=",
             "price": 4.99,
             "trackId": 750000 + i,
             "duration": 180
@@ -401,7 +401,7 @@ def test_filter_albums_pagination():
         song_data = {
             "title": f"Album Pagination Song {i+1}",
             "genres": [1],
-            "cover": "data:image/png;base64,test",
+            "cover": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAIAQMAAAD+wSzIAAAABlBMVEX///+/v7+jQ3Y5AAAADklEQVQI12P4AIX8EAgALgAD/aNpbtEAAAAASUVORK5CYII=",
             "price": 3.99,
             "trackId": 760000 + i,
             "duration": 180
@@ -420,7 +420,7 @@ def test_filter_albums_pagination():
             album_data = {
                 "title": f"Pagination Album {i+1}",
                 "songs": [song_id],
-                "cover": "data:image/png;base64,test",
+                "cover": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAIAQMAAAD+wSzIAAAABlBMVEX///+/v7+jQ3Y5AAAADklEQVQI12P4AIX8EAgALgAD/aNpbtEAAAAASUVORK5CYII=",
                 "price": 12.99
             }
             success, response = make_request("POST", "/album/upload", album_data, 200)
@@ -469,7 +469,7 @@ def test_filter_merch_pagination():
         merch_data = {
             "title": f"Pagination Merch {i+1}",
             "description": "Test",
-            "cover": "data:image/png;base64,test",
+            "cover": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAIAQMAAAD+wSzIAAAABlBMVEX///+/v7+jQ3Y5AAAADklEQVQI12P4AIX8EAgALgAD/aNpbtEAAAAASUVORK5CYII=",
             "price": 25.00
         }
         success, response = make_request("POST", "/merch/upload", merch_data, 200)
@@ -533,7 +533,7 @@ def test_upload_song():
     song_data = {
         "title": "Test Song",
         "genres": [1, 2],
-        "cover": "data:image/png;base64,iVBORw0KGgo=",
+        "cover": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAIAQMAAAD+wSzIAAAABlBMVEX///+/v7+jQ3Y5AAAADklEQVQI12P4AIX8EAgALgAD/aNpbtEAAAAASUVORK5CYII=",
         "price": 9.99,
         "trackId": 100001,
         "duration": 180,
@@ -561,7 +561,7 @@ def test_upload_song_with_album(album_id: int):
     song_data = {
         "title": "Test Song With Album",
         "genres": [1],
-        "cover": "data:image/png;base64,iVBORw0KGgo=",
+        "cover": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAIAQMAAAD+wSzIAAAABlBMVEX///+/v7+jQ3Y5AAAADklEQVQI12P4AIX8EAgALgAD/aNpbtEAAAAASUVORK5CYII=",
         "price": 7.99,
         "trackId": 100002,
         "duration": 200,
@@ -588,7 +588,7 @@ def test_upload_song_invalid_album():
     song_data = {
         "title": "Invalid Album Song",
         "genres": [1],
-        "cover": "data:image/png;base64,test",
+        "cover": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAIAQMAAAD+wSzIAAAABlBMVEX///+/v7+jQ3Y5AAAADklEQVQI12P4AIX8EAgALgAD/aNpbtEAAAAASUVORK5CYII=",
         "price": 5.99,
         "trackId": 100003,
         "duration": 150,
@@ -606,7 +606,7 @@ def test_upload_song_invalid_price():
     song_data = {
         "title": "Invalid Price Song",
         "genres": [1],
-        "cover": "data:image/png;base64,test",
+        "cover": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAIAQMAAAD+wSzIAAAABlBMVEX///+/v7+jQ3Y5AAAADklEQVQI12P4AIX8EAgALgAD/aNpbtEAAAAASUVORK5CYII=",
         "price": -5.00,
         "trackId": 100004,
         "duration": 120
@@ -622,7 +622,7 @@ def test_upload_song_missing_albumorder():
     song_data = {
         "title": "Missing AlbumOrder Song",
         "genres": [1],
-        "cover": "data:image/png;base64,test",
+        "cover": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAIAQMAAAD+wSzIAAAABlBMVEX///+/v7+jQ3Y5AAAADklEQVQI12P4AIX8EAgALgAD/aNpbtEAAAAASUVORK5CYII=",
         "price": 8.99,
         "trackId": 100005,
         "duration": 160,
@@ -702,7 +702,7 @@ def test_list_albums():
         album_data = {
             "title": f"List Test Album {i+1}",
             "songs": [],
-            "cover": "data:image/png;base64,test",
+            "cover": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAIAQMAAAD+wSzIAAAABlBMVEX///+/v7+jQ3Y5AAAADklEQVQI12P4AIX8EAgALgAD/aNpbtEAAAAASUVORK5CYII=",
             "price": 15.99
         }
         success, response = make_request("POST", "/album/upload", album_data, 200)
@@ -741,7 +741,7 @@ def test_filter_albums():
     song_data = {
         "title": "Album Filter Test Song",
         "genres": [1],
-        "cover": "data:image/png;base64,test",
+        "cover": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAIAQMAAAD+wSzIAAAABlBMVEX///+/v7+jQ3Y5AAAADklEQVQI12P4AIX8EAgALgAD/aNpbtEAAAAASUVORK5CYII=",
         "price": 4.99,
         "trackId": 900001,
         "duration": 180
@@ -760,7 +760,7 @@ def test_filter_albums():
         album_data = {
             "title": "Filter Test Album",
             "songs": [song_id],
-            "cover": "data:image/png;base64,test",
+            "cover": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAIAQMAAAD+wSzIAAAABlBMVEX///+/v7+jQ3Y5AAAADklEQVQI12P4AIX8EAgALgAD/aNpbtEAAAAASUVORK5CYII=",
             "price": 12.99
         }
         
@@ -800,7 +800,7 @@ def test_linked_albums():
     album1_data = {
         "title": "First Album with Song",
         "songs": [],
-        "cover": "data:image/png;base64,album1",
+        "cover": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAIAQMAAAD+wSzIAAAABlBMVEX///+/v7+jQ3Y5AAAADklEQVQI12P4AIX8EAgALgAD/aNpbtEAAAAASUVORK5CYII=",
         "price": 10.00
     }
     
@@ -820,7 +820,7 @@ def test_linked_albums():
     song_data = {
         "title": "Song For Linked Albums Test",
         "genres": [1],
-        "cover": "data:image/png;base64,test",
+        "cover": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAIAQMAAAD+wSzIAAAABlBMVEX///+/v7+jQ3Y5AAAADklEQVQI12P4AIX8EAgALgAD/aNpbtEAAAAASUVORK5CYII=",
         "price": 4.99,
         "trackId": 600001,
         "duration": 195,
@@ -846,7 +846,7 @@ def test_linked_albums():
     album2_data = {
         "title": "Second Album with Same Song",
         "songs": [song_id],
-        "cover": "data:image/png;base64,album2",
+        "cover": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAIAQMAAAD+wSzIAAAABlBMVEX///+/v7+jQ3Y5AAAADklEQVQI12P4AIX8EAgALgAD/aNpbtEAAAAASUVORK5CYII=",
         "price": 12.00
     }
     
@@ -909,7 +909,7 @@ def test_upload_album(song_ids_list):
     album_data = {
         "title": "Test Album",
         "songs": songs_to_use,
-        "cover": "data:image/png;base64,albumcover",
+        "cover": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAIAQMAAAD+wSzIAAAABlBMVEX///+/v7+jQ3Y5AAAADklEQVQI12P4AIX8EAgALgAD/aNpbtEAAAAASUVORK5CYII=",
         "price": 19.99,
         "releaseDate": "2024-06-15"
     }
@@ -934,7 +934,7 @@ def test_upload_album_invalid_song():
     album_data = {
         "title": "Invalid Songs Album",
         "songs": [99999],
-        "cover": "data:image/png;base64,test",
+        "cover": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAIAQMAAAD+wSzIAAAABlBMVEX///+/v7+jQ3Y5AAAADklEQVQI12P4AIX8EAgALgAD/aNpbtEAAAAASUVORK5CYII=",
         "price": 15.99
     }
     
@@ -948,7 +948,7 @@ def test_upload_album_invalid_price():
     album_data = {
         "title": "Invalid Price Album",
         "songs": [],
-        "cover": "data:image/png;base64,test",
+        "cover": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAIAQMAAAD+wSzIAAAABlBMVEX///+/v7+jQ3Y5AAAADklEQVQI12P4AIX8EAgALgAD/aNpbtEAAAAASUVORK5CYII=",
         "price": 0
     }
     
@@ -1000,7 +1000,7 @@ def test_album_song_association():
     album_data = {
         "title": "Test Empty Album",
         "songs": [],
-        "cover": "data:image/png;base64,emptyalbumcover",
+        "cover": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAIAQMAAAD+wSzIAAAABlBMVEX///+/v7+jQ3Y5AAAADklEQVQI12P4AIX8EAgALgAD/aNpbtEAAAAASUVORK5CYII=",
         "price": 0.01
     }
     
@@ -1022,7 +1022,7 @@ def test_album_song_association():
     song_data = {
         "title": "Test Song for Album Association",
         "genres": [1],
-        "cover": "data:image/png;base64,songcover",
+        "cover": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAIAQMAAAD+wSzIAAAABlBMVEX///+/v7+jQ3Y5AAAADklEQVQI12P4AIX8EAgALgAD/aNpbtEAAAAASUVORK5CYII=",
         "price": 3.99,
         "trackId": 200001,
         "duration": 195,
@@ -1106,7 +1106,7 @@ def test_list_merch():
         merch_data = {
             "title": f"List Test Merch {i+1}",
             "description": "Test merch",
-            "cover": "data:image/png;base64,test",
+            "cover": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAIAQMAAAD+wSzIAAAABlBMVEX///+/v7+jQ3Y5AAAADklEQVQI12P4AIX8EAgALgAD/aNpbtEAAAAASUVORK5CYII=",
             "price": 20.00
         }
         success, response = make_request("POST", "/merch/upload", merch_data, 200)
@@ -1145,7 +1145,7 @@ def test_filter_merch():
     merch_data = {
         "title": "Filter Test Merch",
         "description": "Test",
-        "cover": "data:image/png;base64,test",
+        "cover": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAIAQMAAAD+wSzIAAAABlBMVEX///+/v7+jQ3Y5AAAADklEQVQI12P4AIX8EAgALgAD/aNpbtEAAAAASUVORK5CYII=",
         "price": 25.00
     }
     
@@ -1191,7 +1191,7 @@ def test_upload_merch():
         "title": "Test Merch",
         "description": "Camiseta de prueba",
         "price": 25.00,
-        "cover": "data:image/png;base64,merchcover"
+        "cover": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAIAQMAAAD+wSzIAAAABlBMVEX///+/v7+jQ3Y5AAAADklEQVQI12P4AIX8EAgALgAD/aNpbtEAAAAASUVORK5CYII="
     }
     
     success, response = make_request("POST", "/merch/upload", merch_data, 200)
@@ -1215,7 +1215,7 @@ def test_upload_merch_invalid_price():
         "title": "Invalid Merch",
         "description": "Test",
         "price": -10.00,
-        "cover": "data:image/png;base64,test"
+        "cover": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAIAQMAAAD+wSzIAAAABlBMVEX///+/v7+jQ3Y5AAAADklEQVQI12P4AIX8EAgALgAD/aNpbtEAAAAASUVORK5CYII="
     }
     
     success, response = make_request("POST", "/merch/upload", merch_data, 400)
@@ -1305,7 +1305,7 @@ def test_filter_artists():
     song_data = {
         "title": "Artist Filter Test Song",
         "genres": [1],
-        "cover": "data:image/png;base64,test",
+        "cover": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAIAQMAAAD+wSzIAAAABlBMVEX///+/v7+jQ3Y5AAAADklEQVQI12P4AIX8EAgALgAD/aNpbtEAAAAASUVORK5CYII=",
         "price": 3.99,
         "trackId": 950001,
         "duration": 150
@@ -1352,7 +1352,7 @@ def test_upload_artist():
     artist_data = {
         "artisticName": "Test Artist",
         "artisticBiography": "Un artista de prueba",
-        "artisticImage": "data:image/png;base64,artistphoto",
+        "artisticImage": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAIAQMAAAD+wSzIAAAABlBMVEX///+/v7+jQ3Y5AAAADklEQVQI12P4AIX8EAgALgAD/aNpbtEAAAAASUVORK5CYII=",
         "artisticEmail": "test@artist.com",
         "socialMediaUrl": "https://twitter.com/testartist",
         "userId": 1
@@ -1551,7 +1551,7 @@ def main():
     empty_album_data = {
         "title": "Empty Album for Song Test",
         "songs": [],
-        "cover": "data:image/png;base64,emptyalbum",
+        "cover": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAIAQMAAAD+wSzIAAAABlBMVEX///+/v7+jQ3Y5AAAADklEQVQI12P4AIX8EAgALgAD/aNpbtEAAAAASUVORK5CYII=",
         "price": 15.99
     }
     success, response = make_request("POST", "/album/upload", empty_album_data, 200)
@@ -1572,7 +1572,7 @@ def main():
         song_with_album_data = {
             "title": "Song With AlbumId",
             "genres": [1],
-            "cover": "data:image/png;base64,song",
+            "cover": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAIAQMAAAD+wSzIAAAABlBMVEX///+/v7+jQ3Y5AAAADklEQVQI12P4AIX8EAgALgAD/aNpbtEAAAAASUVORK5CYII=",
             "price": 4.99,
             "trackId": 300001,
             "duration": 180,
@@ -1626,7 +1626,7 @@ def main():
     album_for_update_data = {
         "title": "Album To Update",
         "songs": [],
-        "cover": "data:image/png;base64,album",
+        "cover": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAIAQMAAAD+wSzIAAAABlBMVEX///+/v7+jQ3Y5AAAADklEQVQI12P4AIX8EAgALgAD/aNpbtEAAAAASUVORK5CYII=",
         "price": 19.99
     }
     success, response = make_request("POST", "/album/upload", album_for_update_data, 200)
@@ -1647,7 +1647,7 @@ def main():
         song_with_album_data = {
             "title": "Song With AlbumId From Start",
             "genres": [1],
-            "cover": "data:image/png;base64,song",
+            "cover": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAIAQMAAAD+wSzIAAAABlBMVEX///+/v7+jQ3Y5AAAADklEQVQI12P4AIX8EAgALgAD/aNpbtEAAAAASUVORK5CYII=",
             "price": 3.99,
             "trackId": 400001,
             "duration": 200,
@@ -1735,7 +1735,7 @@ def main():
     album_owner_data = {
         "title": "Owner Test Album",
         "songs": [],
-        "cover": "data:image/png;base64,owneralbum",
+        "cover": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAIAQMAAAD+wSzIAAAABlBMVEX///+/v7+jQ3Y5AAAADklEQVQI12P4AIX8EAgALgAD/aNpbtEAAAAASUVORK5CYII=",
         "price": 20.00
     }
     success, response = make_request("POST", "/album/upload", album_owner_data, 200)
@@ -1754,7 +1754,7 @@ def main():
     song_owner_data = {
         "title": "Owner Test Song",
         "genres": [1],
-        "cover": "data:image/png;base64,ownersong",
+        "cover": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAIAQMAAAD+wSzIAAAABlBMVEX///+/v7+jQ3Y5AAAADklEQVQI12P4AIX8EAgALgAD/aNpbtEAAAAASUVORK5CYII=",
         "price": 5.00,
         "trackId": 500001,
         "duration": 190
@@ -1775,7 +1775,7 @@ def main():
     merch_owner_data = {
         "title": "Owner Test Merch",
         "description": "Merch para test owner",
-        "cover": "data:image/png;base64,ownermerch",
+        "cover": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAIAQMAAAD+wSzIAAAABlBMVEX///+/v7+jQ3Y5AAAADklEQVQI12P4AIX8EAgALgAD/aNpbtEAAAAASUVORK5CYII=",
         "price": 30.00
     }
     success, response = make_request("POST", "/merch/upload", merch_owner_data, 200)
@@ -1893,3 +1893,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
