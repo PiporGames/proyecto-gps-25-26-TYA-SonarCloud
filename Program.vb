@@ -460,10 +460,25 @@ Module Program
                 cmd.ExecuteNonQuery()
             End Using
 
-            ' Insertar géneros
+            ' Validar y insertar géneros
             If songData.ContainsKey("genres") Then
                 For Each genreElement In songData("genres").EnumerateArray()
                     Dim genreId As Integer = genreElement.GetInt32()
+                    
+                    ' Validar que el género exista
+                    Dim genreExists As Boolean = False
+                    Using cmd = db.CreateCommand("SELECT COUNT(*) FROM generos WHERE idgenero = @idgenero")
+                        cmd.Parameters.AddWithValue("@idgenero", genreId)
+                        Dim count As Integer = CInt(cmd.ExecuteScalar())
+                        genreExists = count > 0
+                    End Using
+
+                    If Not genreExists Then
+                        jsonResponse = GenerateErrorResponse("422", $"El género con ID {genreId} no existe")
+                        statusCode = 422 ' Unprocessable Entity
+                        Return
+                    End If
+                    
                     Using cmd = db.CreateCommand("INSERT INTO generoscanciones (idcancion, idgenero) VALUES (@idcancion, @idgenero)")
                         cmd.Parameters.AddWithValue("@idcancion", newSongId)
                         cmd.Parameters.AddWithValue("@idgenero", genreId)
@@ -713,6 +728,7 @@ Module Program
                 {"price", Nothing},
                 {"albumId", Nothing},
                 {"trackId", Nothing},
+                {"albumOrder", Nothing},
                 {"linked_albums", Nothing}
             }
 
@@ -765,6 +781,19 @@ Module Program
             End Using
             schema("genres") = genres
 
+            ' Recuperar albumOrder del álbum original (si existe)
+            If schema("albumId") IsNot Nothing Then
+                Using cmd = db.CreateCommand("SELECT tracknumber FROM cancionesalbumes WHERE idcancion = @id AND idalbum = @albumog")
+                    cmd.Parameters.AddWithValue("@id", songId)
+                    cmd.Parameters.AddWithValue("@albumog", CInt(schema("albumId")))
+                    Using reader = cmd.ExecuteReader()
+                        If reader.Read() Then
+                            schema("albumOrder") = reader.GetInt32(0)
+                        End If
+                    End Using
+                End Using
+            End If
+
             ' Recuperar álbumes enlazados (linked_albums)
             Dim linkedAlbums As New List(Of Integer)
             Dim albumOgId As Object = schema("albumId")
@@ -810,6 +839,7 @@ Module Program
             {"price", Nothing},
             {"albumId", Nothing},
             {"trackId", Nothing},
+            {"albumOrder", Nothing},
             {"linked_albums", Nothing}
         }
 
@@ -865,6 +895,19 @@ Module Program
             End Using
         End Using
         schema("genres") = genres
+
+        ' Recuperar albumOrder del álbum original (si existe)
+        If schema("albumId") IsNot Nothing Then
+            Using cmd = db.CreateCommand("SELECT tracknumber FROM cancionesalbumes WHERE idcancion = @id AND idalbum = @albumog")
+                cmd.Parameters.AddWithValue("@id", Integer.Parse(action))
+                cmd.Parameters.AddWithValue("@albumog", CInt(schema("albumId")))
+                Using reader = cmd.ExecuteReader()
+                    If reader.Read() Then
+                        schema("albumOrder") = reader.GetInt32(0)
+                    End If
+                End Using
+            End Using
+        End If
 
         ' Recuperar álbumes enlazados (linked_albums) - excluir el albumog
         Dim linkedAlbums As New List(Of Integer)
@@ -989,6 +1032,23 @@ Module Program
 
             ' Actualizar géneros si están presentes
             If songData.ContainsKey("genres") Then
+                ' Validar que todos los géneros existan
+                For Each genreElement In songData("genres").EnumerateArray()
+                    Dim genreId As Integer = genreElement.GetInt32()
+                    Dim genreExists As Boolean = False
+                    Using cmd = db.CreateCommand("SELECT COUNT(*) FROM generos WHERE idgenero = @idgenero")
+                        cmd.Parameters.AddWithValue("@idgenero", genreId)
+                        Dim count As Integer = CInt(cmd.ExecuteScalar())
+                        genreExists = count > 0
+                    End Using
+
+                    If Not genreExists Then
+                        jsonResponse = GenerateErrorResponse("422", $"El género con ID {genreId} no existe")
+                        statusCode = 422 ' Unprocessable Entity
+                        Return
+                    End If
+                Next
+
                 Using cmd = db.CreateCommand("DELETE FROM generoscanciones WHERE idcancion = @id")
                     cmd.Parameters.AddWithValue("@id", songId)
                     cmd.ExecuteNonQuery()
@@ -1360,15 +1420,16 @@ Module Program
             }
 
             ' Recuperar datos del álbum
-            Using cmd = db.CreateCommand("SELECT titulo, cover, fechalanzamiento, precio FROM albumes WHERE idalbum = @id")
+            Using cmd = db.CreateCommand("SELECT titulo, descripcion, cover, fechalanzamiento, precio FROM albumes WHERE idalbum = @id")
                 cmd.Parameters.AddWithValue("@id", albumId)
                 Using reader = cmd.ExecuteReader()
                     If reader.HasRows Then
                         While reader.Read()
                             schema("title") = reader.GetString(0)
-                            schema("cover") = reader.GetString(1)
-                            schema("releaseDate") = reader.GetDateTime(2).ToString("yyyy-MM-dd")
-                            schema("price") = reader.GetDecimal(3).ToString()
+                            schema("description") = If(reader.IsDBNull(1), "", reader.GetString(1))
+                            schema("cover") = reader.GetString(2)
+                            schema("releaseDate") = reader.GetDateTime(3).ToString("yyyy-MM-dd")
+                            schema("price") = reader.GetDecimal(4).ToString()
                         End While
                     Else
                         Return Nothing
@@ -1416,8 +1477,6 @@ Module Program
             End Using
             schema("genres") = genres
 
-            schema("description") = ""
-
             Return schema
 
         Catch ex As Exception
@@ -1448,16 +1507,17 @@ Module Program
             }
 
             ' Recuperar datos del álbum
-            Using cmd = db.CreateCommand("SELECT titulo, cover, fechalanzamiento, precio FROM albumes WHERE idalbum = @id")
+            Using cmd = db.CreateCommand("SELECT titulo, descripcion, cover, fechalanzamiento, precio FROM albumes WHERE idalbum = @id")
                 cmd.Parameters.AddWithValue("@id", Integer.Parse(action))
                 Using reader = cmd.ExecuteReader()
                     If reader.HasRows Then
                         While reader.Read()
                             schema("albumId") = action
                             schema("title") = reader.GetString(0)
-                            schema("cover") = reader.GetString(1)
-                            schema("releaseDate") = reader.GetDateTime(2).ToString("yyyy-MM-dd")
-                            schema("price") = reader.GetDecimal(3).ToString()
+                            schema("description") = If(reader.IsDBNull(1), "", reader.GetString(1))
+                            schema("cover") = reader.GetString(2)
+                            schema("releaseDate") = reader.GetDateTime(3).ToString("yyyy-MM-dd")
+                            schema("price") = reader.GetDecimal(4).ToString()
                         End While
                     Else
                         jsonResponse = ""
@@ -1506,8 +1566,6 @@ Module Program
                 End Using
             End Using
             schema("genres") = genres
-
-            schema("description") = "" ' No hay campo descripción en la tabla albumes
 
             jsonResponse = ConvertToJson(schema)
             statusCode = HttpStatusCode.OK
@@ -1609,6 +1667,10 @@ Module Program
                 If albumData.ContainsKey("title") Then
                     updates.Add("titulo = @titulo")
                     cmd.Parameters.AddWithValue("@titulo", albumData("title").GetString())
+                End If
+                If albumData.ContainsKey("description") Then
+                    updates.Add("descripcion = @descripcion")
+                    cmd.Parameters.AddWithValue("@descripcion", If(albumData("description").ValueKind = JsonValueKind.Null, DBNull.Value, CType(albumData("description").GetString(), Object)))
                 End If
                 If albumData.ContainsKey("cover") Then
                     updates.Add("cover = @cover")
