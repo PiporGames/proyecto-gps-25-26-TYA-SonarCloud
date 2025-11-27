@@ -188,7 +188,7 @@ paths:
         '400':
           description: Invalid input
         '422':
-          description: Validation exception (e.g., referenced album does not exist, price not positive, albumId/albumOrder dependency not met)
+          description: Validation exception (e.g., referenced album does not exist, price not positive)
         default:
           description: Unexpected error
           content:
@@ -1284,11 +1284,6 @@ components:
           type: integer
           description: ID of the Track file that contains the song
           example: 123456
-        albumOrder:
-          type: integer
-          nullable: true
-          description: Position of the song in the album (null if single).
-          example: 1
         linked_albums:
           type: array
           items:
@@ -1349,13 +1344,8 @@ components:
         albumId:
           type: integer
           nullable: true
-          description: ID of the original Album the Song belongs to (immutable once created). If specified during creation, albumOrder MUST also be specified and the album must exist. Singles have null albumId.
-          example: 0
-        albumOrder:
-          type: integer
-          nullable: true
-          description: Position of the song in the album (null if single). REQUIRED when albumId is specified.
-          example: 1          
+          description: ID of the original Album the Song belongs to (immutable once created). If specified during creation, the song will be added to the end of the album's track list. Singles have null albumId.
+          example: 0          
       required:
         - title
         - genres

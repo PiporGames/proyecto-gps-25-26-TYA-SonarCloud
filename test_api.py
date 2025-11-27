@@ -565,8 +565,7 @@ def test_upload_song_with_album(album_id: int):
         "price": 7.99,
         "trackId": 100002,
         "duration": 200,
-        "albumId": album_id,
-        "albumOrder": 1
+        "albumId": album_id
     }
     
     success, response = make_request("POST", "/song/upload", song_data, 200)
@@ -592,8 +591,7 @@ def test_upload_song_invalid_album():
         "price": 5.99,
         "trackId": 100003,
         "duration": 150,
-        "albumId": 99999,
-        "albumOrder": 1
+        "albumId": 99999
     }
     
     success, response = make_request("POST", "/song/upload", song_data, 422)
@@ -614,27 +612,6 @@ def test_upload_song_invalid_price():
     
     success, response = make_request("POST", "/song/upload", song_data, 400)
     print_result(success, f"Validación precio negativo - Status: {response.status_code if response else 'N/A'}")
-
-def test_upload_song_missing_albumorder():
-    """Prueba crear canción con albumId pero sin albumOrder (debe fallar con 400)"""
-    print_test_header("POST /song/upload - Validación albumId sin albumOrder")
-    
-    song_data = {
-        "title": "Missing AlbumOrder Song",
-        "genres": [1],
-        "cover": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAIAQMAAAD+wSzIAAAABlBMVEX///+/v7+jQ3Y5AAAADklEQVQI12P4AIX8EAgALgAD/aNpbtEAAAAASUVORK5CYII=",
-        "price": 8.99,
-        "trackId": 100005,
-        "duration": 160,
-        "albumId": 1
-        # albumOrder falta intencionalmente
-    }
-    
-    success, response = make_request("POST", "/song/upload", song_data, 400)
-    if success:
-        print_result(True, f"Validación correcta: albumId sin albumOrder → 400 Bad Request")
-    else:
-        print_result(False, f"Esperado 400, recibido: {response.status_code if response else 'N/A'}")
 
 def test_get_song(song_id: int):
     """Prueba obtener una canción por ID"""
@@ -824,8 +801,7 @@ def test_linked_albums():
         "price": 4.99,
         "trackId": 600001,
         "duration": 195,
-        "albumId": album1_id,
-        "albumOrder": 1
+        "albumId": album1_id
     }
     
     success, response = make_request("POST", "/song/upload", song_data, 200)
@@ -1026,8 +1002,7 @@ def test_album_song_association():
         "price": 3.99,
         "trackId": 200001,
         "duration": 195,
-        "albumId": album_id,
-        "albumOrder": 1
+        "albumId": album_id
     }
     
     success, response = make_request("POST", "/song/upload", song_data, 200)
@@ -1576,8 +1551,7 @@ def main():
             "price": 4.99,
             "trackId": 300001,
             "duration": 180,
-            "albumId": empty_album_id,
-            "albumOrder": 1
+            "albumId": empty_album_id
         }
         success, response = make_request("POST", "/song/upload", song_with_album_data, 200)
         song_with_album_id = None
@@ -1651,8 +1625,7 @@ def main():
             "price": 3.99,
             "trackId": 400001,
             "duration": 200,
-            "albumId": album_update_id,
-            "albumOrder": 1
+            "albumId": album_update_id
         }
         success, response = make_request("POST", "/song/upload", song_with_album_data, 200)
         single_update_id = None
@@ -1863,7 +1836,6 @@ def main():
     test_search_without_auth()
     test_get_genres()
     test_upload_song_invalid_album()
-    test_upload_song_missing_albumorder()
     test_upload_album_invalid_song()
     
     # =========================================================================

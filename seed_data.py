@@ -42,9 +42,9 @@ print(f"✓ Artista creado (ID: {artist_id})")
 print("\nCreando singles...")
 singles = []
 single_data = [
-    {"title": "Midnight Dreams", "duration": 245, "price": 1.29, "trackId": 10001, "cover": TEST_IMAGE},
-    {"title": "Electric Heart", "duration": 198, "price": 0.99, "trackId": 10002, "cover": TEST_IMAGE},
-    {"title": "Neon Lights", "duration": 213, "price": 1.49, "trackId": 10003, "cover": TEST_IMAGE}
+    {"title": "Midnight Dreams", "duration": 245, "price": 1.29, "trackId": 1, "cover": TEST_IMAGE},
+    {"title": "Electric Heart", "duration": 198, "price": 0.99, "trackId": 1, "cover": TEST_IMAGE},
+    {"title": "Neon Lights", "duration": 213, "price": 1.49, "trackId": 1, "cover": TEST_IMAGE}
 ]
 for sd in single_data:
     s = post("/song/upload", {**sd, "genres": genre_ids[:2], "description": f"Single lanzado en 2024"})
@@ -66,26 +66,16 @@ print(f"✓ Álbum vacío creado (ID: {empty_album['albumId']})")
 print("\nCreando álbum 'Shadows & Echoes'...")
 album1_songs = []
 album1_data = [
-    {"title": "Intro: The Awakening", "duration": 82, "price": 0.69, "trackId": 20001, "order": 1},
-    {"title": "Lost in Translation", "duration": 224, "price": 1.29, "trackId": 20002, "order": 2},
-    {"title": "Echoes of You", "duration": 267, "price": 1.29, "trackId": 20003, "order": 3},
-    {"title": "Dancing with Shadows", "duration": 198, "price": 1.29, "trackId": 20004, "order": 4},
-    {"title": "Interlude: Silence", "duration": 45, "price": 0.49, "trackId": 20005, "order": 5},
-    {"title": "Broken Wings", "duration": 301, "price": 1.49, "trackId": 20006, "order": 6},
-    {"title": "Outro: Fade Away", "duration": 156, "price": 0.99, "trackId": 20007, "order": 7}
+    {"title": "Intro: The Awakening", "duration": 82, "price": 0.69, "trackId": 1, "order": 1},
+    {"title": "Lost in Translation", "duration": 224, "price": 1.29, "trackId": 1, "order": 2},
+    {"title": "Echoes of You", "duration": 267, "price": 1.29, "trackId": 1, "order": 3},
+    {"title": "Dancing with Shadows", "duration": 198, "price": 1.29, "trackId": 1, "order": 4},
+    {"title": "Interlude: Silence", "duration": 45, "price": 0.49, "trackId": 1, "order": 5},
+    {"title": "Broken Wings", "duration": 301, "price": 1.49, "trackId": 1, "order": 6},
+    {"title": "Outro: Fade Away", "duration": 156, "price": 0.99, "trackId": 1, "order": 7}
 ]
 
-# Primero crear álbum vacío
-album1 = post("/album/upload", {
-    "title": "Shadows & Echoes",
-    "songs": [],
-    "cover": TEST_IMAGE,
-    "price": 9.99,
-    "releaseDate": "2023-03-15"
-})
-album1_id = album1["albumId"]
-
-# Crear canciones asociadas al álbum
+# Crear canciones para el álbum 1
 for sd in album1_data:
     s = post("/song/upload", {
         "title": sd["title"],
@@ -94,12 +84,20 @@ for sd in album1_data:
         "trackId": sd["trackId"],
         "genres": genre_ids[:2],
         "cover": TEST_IMAGE,
-        "description": f"Track {sd['order']} from Shadows & Echoes",
-        "albumId": album1_id,
-        "albumOrder": sd["order"]
+        "description": f"Track {sd['order']} from Shadows & Echoes"
     })
     album1_songs.append(s["songId"])
     print(f"✓ '{sd['title']}' (ID: {s['songId']})")
+
+# Crear álbum con las canciones
+album1 = post("/album/upload", {
+    "title": "Shadows & Echoes",
+    "songs": album1_songs,
+    "cover": TEST_IMAGE,
+    "price": 9.99,
+    "releaseDate": "2023-03-15"
+})
+album1_id = album1["albumId"]
 
 print(f"✓ Álbum 'Shadows & Echoes' (ID: {album1_id}) con {len(album1_songs)} canciones")
 
@@ -107,22 +105,14 @@ print(f"✓ Álbum 'Shadows & Echoes' (ID: {album1_id}) con {len(album1_songs)} 
 print("\nCreando álbum 'Cosmic Journey'...")
 album2_songs = []
 album2_data = [
-    {"title": "Stellar", "duration": 189, "price": 1.29, "trackId": 30001, "order": 1},
-    {"title": "Gravity", "duration": 234, "price": 1.29, "trackId": 30002, "order": 2},
-    {"title": "Nebula", "duration": 276, "price": 1.49, "trackId": 30003, "order": 3},
-    {"title": "Orbit", "duration": 201, "price": 1.29, "trackId": 30004, "order": 4},
-    {"title": "Supernova", "duration": 312, "price": 1.49, "trackId": 30005, "order": 5}
+    {"title": "Stellar", "duration": 189, "price": 1.29, "trackId": 1, "order": 1},
+    {"title": "Gravity", "duration": 234, "price": 1.29, "trackId": 1, "order": 2},
+    {"title": "Nebula", "duration": 276, "price": 1.49, "trackId": 1, "order": 3},
+    {"title": "Orbit", "duration": 201, "price": 1.29, "trackId": 1, "order": 4},
+    {"title": "Supernova", "duration": 312, "price": 1.49, "trackId": 1, "order": 5}
 ]
 
-album2 = post("/album/upload", {
-    "title": "Cosmic Journey",
-    "songs": [],
-    "cover": TEST_IMAGE,
-    "price": 7.99,
-    "releaseDate": "2024-06-20"
-})
-album2_id = album2["albumId"]
-
+# Crear canciones para el álbum 2
 for sd in album2_data:
     s = post("/song/upload", {
         "title": sd["title"],
@@ -131,12 +121,20 @@ for sd in album2_data:
         "trackId": sd["trackId"],
         "genres": genre_ids[-2:] if len(genre_ids) >= 2 else genre_ids,
         "cover": TEST_IMAGE,
-        "description": f"Track {sd['order']} from Cosmic Journey - An electronic odyssey",
-        "albumId": album2_id,
-        "albumOrder": sd["order"]
+        "description": f"Track {sd['order']} from Cosmic Journey - An electronic odyssey"
     })
     album2_songs.append(s["songId"])
     print(f"✓ '{sd['title']}' (ID: {s['songId']})")
+
+# Crear álbum con las canciones
+album2 = post("/album/upload", {
+    "title": "Cosmic Journey",
+    "songs": album2_songs,
+    "cover": TEST_IMAGE,
+    "price": 7.99,
+    "releaseDate": "2024-06-20"
+})
+album2_id = album2["albumId"]
 
 print(f"✓ Álbum 'Cosmic Journey' (ID: {album2_id}) con {len(album2_songs)} canciones")
 

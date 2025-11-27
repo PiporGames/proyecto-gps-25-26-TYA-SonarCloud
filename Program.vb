@@ -13,7 +13,7 @@ Module Program
     ' Creado por: José Manuel de Torres Dominguez
     '==========================================================================
     ' PARÁMETROS DE CONFIGURACIÓN
-    Dim host_ip As String = "+"
+    Dim host_ip As String = "localhost"
     Dim host_port As Integer = 8081
     Dim connectionString = "Host=10.1.1.1;Username=tya_admin;Password=12345;Database=tya"
     Dim db As NpgsqlDataSource = Nothing
@@ -495,7 +495,6 @@ Module Program
             Dim cover As String = If(songData.ContainsKey("cover") AndAlso songData("cover").ValueKind <> JsonValueKind.Null AndAlso Not String.IsNullOrWhiteSpace(songData("cover").GetString()), songData("cover").GetString(), Nothing)
             Dim price As Decimal = songData("price").GetDecimal()
             Dim albumId As Integer? = If(songData.ContainsKey("albumId") AndAlso songData("albumId").ValueKind <> JsonValueKind.Null, CType(songData("albumId").GetInt32(), Integer?), Nothing)
-            Dim albumOrder As Integer? = If(songData.ContainsKey("albumOrder") AndAlso songData("albumOrder").ValueKind <> JsonValueKind.Null, CType(songData("albumOrder").GetInt32(), Integer?), Nothing)
             Dim releaseDate As String = If(songData.ContainsKey("releaseDate"), songData("releaseDate").GetString(), DateTime.Now.ToString("yyyy-MM-dd"))
             Dim trackId As Integer = songData("trackId").GetInt32()
             Dim duration As Integer = songData("duration").GetInt32()
@@ -503,19 +502,6 @@ Module Program
             ' Validar que price sea positivo
             If price <= 0 Then
                 jsonResponse = GenerateErrorResponse("400", "El precio debe ser un valor positivo")
-                statusCode = HttpStatusCode.BadRequest
-                Return
-            End If
-
-            ' Validar que si albumId está definido, albumOrder también lo esté
-            If albumId.HasValue AndAlso Not albumOrder.HasValue Then
-                jsonResponse = GenerateErrorResponse("400", "Si se especifica albumId, también se debe especificar albumOrder")
-                statusCode = HttpStatusCode.BadRequest
-                Return
-            End If
-
-            If Not albumId.HasValue AndAlso albumOrder.HasValue Then
-                jsonResponse = GenerateErrorResponse("400", "Si se especifica albumOrder, también se debe especificar albumId")
                 statusCode = HttpStatusCode.BadRequest
                 Return
             End If
@@ -619,20 +605,20 @@ Module Program
                 Next
             End If
 
-            ' Si tiene álbum original (albumog), SIEMPRE insertar en CancionesAlbumes
-            ' Esto asegura que el álbum original siempre aparezca en la tabla de relaciones
+            ' Si tiene álbum original (albumog), insertar en CancionesAlbumes al final
             If albumId.HasValue Then
-                ' albumOrder es obligatorio cuando se proporciona albumId
-                If Not albumOrder.HasValue Then
-                    jsonResponse = GenerateErrorResponse("400", "Si se especifica albumId, también se debe especificar albumOrder")
-                    statusCode = HttpStatusCode.BadRequest
-                    Return
-                End If
+                ' Obtener el máximo trackNumber actual para el álbum
+                Dim maxTrackNumber As Integer = 0
+                Using cmd = db.CreateCommand("SELECT COALESCE(MAX(tracknumber), 0) FROM cancionesalbumes WHERE idalbum = @idalbum")
+                    cmd.Parameters.AddWithValue("@idalbum", albumId.Value)
+                    maxTrackNumber = CInt(cmd.ExecuteScalar())
+                End Using
 
+                ' Insertar con trackNumber = max + 1
                 Using cmd = db.CreateCommand("INSERT INTO cancionesalbumes (idcancion, idalbum, tracknumber) VALUES (@idcancion, @idalbum, @tracknumber)")
                     cmd.Parameters.AddWithValue("@idcancion", newSongId)
                     cmd.Parameters.AddWithValue("@idalbum", albumId.Value)
-                    cmd.Parameters.AddWithValue("@tracknumber", albumOrder.Value)
+                    cmd.Parameters.AddWithValue("@tracknumber", maxTrackNumber + 1)
                     cmd.ExecuteNonQuery()
                 End Using
             End If
@@ -847,7 +833,6 @@ Module Program
                 {"price", Nothing},
                 {"albumId", Nothing},
                 {"trackId", Nothing},
-                {"albumOrder", Nothing},
                 {"linked_albums", Nothing}
             }
 
@@ -885,19 +870,6 @@ Module Program
                 genres.Add(genreId.ToString())
             Next
             schema("genres") = genres
-
-            ' Recuperar albumOrder del álbum original (si existe)
-            If schema("albumId") IsNot Nothing Then
-                Using cmd = db.CreateCommand("SELECT tracknumber FROM cancionesalbumes WHERE idcancion = @id AND idalbum = @albumog")
-                    cmd.Parameters.AddWithValue("@id", songId)
-                    cmd.Parameters.AddWithValue("@albumog", CInt(schema("albumId")))
-                    Using reader = cmd.ExecuteReader()
-                        If reader.Read() Then
-                            schema("albumOrder") = reader.GetInt32(0)
-                        End If
-                    End Using
-                End Using
-            End If
 
             ' Recuperar álbumes enlazados (linked_albums)
             Dim linkedAlbums As New List(Of Integer)
@@ -1088,15 +1060,6 @@ Module Program
                         cmd.ExecuteNonQuery()
                     End Using
                 Next
-            End If
-
-            ' Actualizar orden en álbum si está presente
-            If songData.ContainsKey("albumOrder") AndAlso songData("albumOrder").ValueKind <> JsonValueKind.Null Then
-                Using cmd = db.CreateCommand("UPDATE cancionesalbumes SET tracknumber = @tracknumber WHERE idcancion = @id")
-                    cmd.Parameters.AddWithValue("@tracknumber", songData("albumOrder").GetInt32())
-                    cmd.Parameters.AddWithValue("@id", songId)
-                    cmd.ExecuteNonQuery()
-                End Using
             End If
 
             jsonResponse = ""
