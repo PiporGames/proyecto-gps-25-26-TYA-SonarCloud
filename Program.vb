@@ -2382,11 +2382,88 @@ Module Program
             Dim artistId = ValidateNumericId(action, "artista", jsonResponse, statusCode)
             If Not artistId.HasValue Then Return
 
-            ' Obtener la ruta de la imagen antes de eliminar el registro
-            Dim imagePath = GetImagePathBeforeDelete("artistas", "imagen", "idartista", artistId.Value)
+            ' 1) Eliminar canciones, álbumes y merch creados por este artista (ft = false)
+            ' Canciones creadas por el artista
+            Dim songIds As New List(Of Integer)
+            Using cmd = db.CreateCommand("SELECT idcancion FROM autorescanciones WHERE idartista = @id AND ft = false")
+                cmd.Parameters.AddWithValue("@id", artistId.Value)
+                Using reader = cmd.ExecuteReader()
+                    While reader.Read()
+                        If Not IsDBNull(reader("idcancion")) Then songIds.Add(Convert.ToInt32(reader("idcancion")))
+                    End While
+                End Using
+            End Using
 
-            ' Eliminar artista (las relaciones se eliminan en cascada)
-            DeleteRecordWithImage("artistas", "idartista", artistId.Value, imagePath, "Artista", jsonResponse, statusCode)
+            For Each sId In songIds
+                Dim coverPath = GetImagePathBeforeDelete("canciones", "cover", "idcancion", sId)
+                If Not DeleteRecordWithImage("canciones", "idcancion", sId, coverPath, "Canción", jsonResponse, statusCode) Then
+                    Return
+                End If
+            Next
+
+            ' Álbumes creados por el artista
+            Dim albumIds As New List(Of Integer)
+            Using cmd = db.CreateCommand("SELECT idalbum FROM autoresalbumes WHERE idartista = @id AND ft = false")
+                cmd.Parameters.AddWithValue("@id", artistId.Value)
+                Using reader = cmd.ExecuteReader()
+                    While reader.Read()
+                        If Not IsDBNull(reader("idalbum")) Then albumIds.Add(Convert.ToInt32(reader("idalbum")))
+                    End While
+                End Using
+            End Using
+
+            For Each aId In albumIds
+                ' Antes de eliminar el álbum, poner albumog a NULL en todas las canciones que lo tengan
+                Using cmd = db.CreateCommand("UPDATE canciones SET albumog = NULL WHERE albumog = @id")
+                    cmd.Parameters.AddWithValue("@id", aId)
+                    cmd.ExecuteNonQuery()
+                End Using
+
+                Dim coverPath = GetImagePathBeforeDelete("albumes", "cover", "idalbum", aId)
+                If Not DeleteRecordWithImage("albumes", "idalbum", aId, coverPath, "Álbum", jsonResponse, statusCode) Then
+                    Return
+                End If
+            Next
+
+            ' Merchandising creado por el artista
+            Dim merchIds As New List(Of Integer)
+            Using cmd = db.CreateCommand("SELECT idmerch FROM AutoresMerch WHERE idartista = @id AND ft = false")
+                cmd.Parameters.AddWithValue("@id", artistId.Value)
+                Using reader = cmd.ExecuteReader()
+                    While reader.Read()
+                        If Not IsDBNull(reader("idmerch")) Then merchIds.Add(Convert.ToInt32(reader("idmerch")))
+                    End While
+                End Using
+            End Using
+
+            For Each merchId In merchIds
+                Dim coverPath = GetImagePathBeforeDelete("merch", "cover", "idmerch", merchId)
+                If Not DeleteRecordWithImage("merch", "idmerch", merchId, coverPath, "Merchandising", jsonResponse, statusCode) Then
+                    Return
+                End If
+            Next
+
+            ' 2) Eliminar todas las referencias del artista en las tablas de relación
+            Using cmd = db.CreateCommand("DELETE FROM autorescanciones WHERE idartista = @id")
+                cmd.Parameters.AddWithValue("@id", artistId.Value)
+                cmd.ExecuteNonQuery()
+            End Using
+
+            Using cmd = db.CreateCommand("DELETE FROM autoresalbumes WHERE idartista = @id")
+                cmd.Parameters.AddWithValue("@id", artistId.Value)
+                cmd.ExecuteNonQuery()
+            End Using
+
+            Using cmd = db.CreateCommand("DELETE FROM AutoresMerch WHERE idartista = @id")
+                cmd.Parameters.AddWithValue("@id", artistId.Value)
+                cmd.ExecuteNonQuery()
+            End Using
+
+            ' 3) Eliminar el artista de la tabla artistas
+            Dim imagePath = GetImagePathBeforeDelete("artistas", "imagen", "idartista", artistId.Value)
+            If Not DeleteRecordWithImage("artistas", "idartista", artistId.Value, imagePath, "Artista", jsonResponse, statusCode) Then
+                Return
+            End If
 
         Catch ex As Exception
             jsonResponse = GenerateErrorResponse("500", "Error al eliminar el artista: " & ex.Message)
