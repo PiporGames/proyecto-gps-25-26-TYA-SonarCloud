@@ -17,12 +17,20 @@ Module Program
     ' PARÁMETROS DE CONFIGURACIÓN
     Dim host_ip As String = "localhost"
     Dim host_port As Integer = 8081
-    Dim connectionString As String = "Host=10.1.1.1;Username=tya_admin;Password=12345;Database=tya"
+    Dim connectionString As String = ""
     Dim db As NpgsqlDataSource = Nothing
     Dim ip_auth As String = "localhost:8080" ' IP del servicio de autenticación
     '==========================================================================
 
     Sub Main(args As String())
+        ' Cargar configuración desde archivo
+        Try
+            LoadConfiguration()
+        Catch ex As Exception
+            Console.WriteLine("Error al cargar la configuración: " & ex.Message)
+            Return
+        End Try
+
         ' Conectarse a la base de datos PostgreSQL
         Try
             db = NpgsqlDataSource.Create(connectionString)
@@ -36,6 +44,50 @@ Module Program
         StartServerAsync(host_ip, host_port).GetAwaiter().GetResult()
     End Sub
 
+    ''' <summary>
+    ''' Carga la configuración desde el archivo config.json
+    ''' </summary>
+    Sub LoadConfiguration()
+        Dim configPath As String = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "config.json")
+        
+        If Not File.Exists(configPath) Then
+            Throw New FileNotFoundException($"Archivo de configuración no encontrado: {configPath}")
+        End If
+
+        Try
+            Dim jsonContent As String = File.ReadAllText(configPath)
+            Dim jsonDoc = JsonDocument.Parse(jsonContent)
+            Dim root As JsonElement = jsonDoc.RootElement
+            Dim dbConfig As JsonElement
+            Dim serverConfig As JsonElement
+            Dim authConfig As JsonElement
+
+            ' Cargar configuración de la base de datos
+            If root.TryGetProperty("database", dbConfig) Then
+                Dim host As String = dbConfig.GetProperty("host").GetString()
+                Dim username As String = dbConfig.GetProperty("username").GetString()
+                Dim password As String = dbConfig.GetProperty("password").GetString()
+                Dim database As String = dbConfig.GetProperty("database").GetString()
+                connectionString = $"Host={host};Username={username};Password={password};Database={database}"
+            End If
+
+            ' Cargar configuración del servidor
+            If root.TryGetProperty("server", serverConfig) Then
+                host_ip = serverConfig.GetProperty("host").GetString()
+                host_port = serverConfig.GetProperty("port").GetInt32()
+            End If
+
+            ' Cargar configuración del servicio de autenticación
+            If root.TryGetProperty("auth_service", authConfig) Then
+                ip_auth = authConfig.GetProperty("ip").GetString()
+            End If
+
+            Console.WriteLine("Configuración cargada correctamente desde config.json")
+
+        Catch ex As Exception
+            Throw New Exception("Error al parsear config.json: " & ex.Message, ex)
+        End Try
+    End Sub
 
     Async Function StartServerAsync(host_ip As String, host_port As Integer) As Task
         ' Crear el servidor HTTP

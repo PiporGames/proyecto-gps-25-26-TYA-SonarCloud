@@ -1,0 +1,15 @@
+{
+  "database": {
+    "host": "localhost",
+    "username": "your_username",
+    "password": "your_password",
+    "database": "your_database_name"
+  },
+  "server": {
+    "host": "localhost",
+    "port": 8081
+  },
+  "auth_service": {
+    "ip": "localhost:8080"
+  }
+}
