@@ -39,12 +39,12 @@ Module Program
         ' Crear el servidor HTTP
         Dim listener As New HttpListener()
         ' Configurar el prefijo (URL base) donde escuchar
-        listener.Prefixes.Add("http://" + host_ip + ":" + host_port.ToString() + "/")
+        listener.Prefixes.Add("http://" & host_ip & ":" & host_port.ToString() & "/")
 
         Try
             ' Iniciar el servidor
             listener.Start()
-            Console.WriteLine("Servidor HTTP iniciado en http://" + host_ip + ":" + host_port.ToString())
+            Console.WriteLine("Servidor HTTP iniciado en http://" & host_ip & ":" & host_port.ToString())
             Console.WriteLine("Presiona Ctrl+C para detener el servidor")
             Console.WriteLine()
 
