@@ -1,3 +1,5 @@
+Option Strict On
+
 Imports System
 Imports System.Net
 Imports System.IO
@@ -15,7 +17,7 @@ Module Program
     ' PARÁMETROS DE CONFIGURACIÓN
     Dim host_ip As String = "localhost"
     Dim host_port As Integer = 8081
-    Dim connectionString = "Host=10.1.1.1;Username=tya_admin;Password=12345;Database=tya"
+    Dim connectionString As String = "Host=10.1.1.1;Username=tya_admin;Password=12345;Database=tya"
     Dim db As NpgsqlDataSource = Nothing
     Dim ip_auth As String = "localhost:8080" ' IP del servicio de autenticación
     '==========================================================================
@@ -241,7 +243,7 @@ Module Program
 
             ElseIf resource = "genres" AndAlso request.HttpMethod = "GET" Then
                 ' Endpoint /genres - no requiere autenticación
-                getGenres(request, action, jsonResponse, statusCode)
+                getGenres(request, action, jsonResponse, CType(statusCode, HttpStatusCode))
 
 
             ElseIf request.Url.AbsolutePath = "/" Then
@@ -526,7 +528,7 @@ Module Program
             Dim newSongId As Integer
             Using cmd = db.CreateCommand("INSERT INTO canciones (titulo, descripcion, cover, track, duracion, fechalanzamiento, precio, albumog) VALUES (@titulo, @descripcion, @cover, @track, @duracion, @fecha, @precio, @albumog) RETURNING idcancion")
                 cmd.Parameters.AddWithValue("@titulo", title)
-                cmd.Parameters.AddWithValue("@descripcion", If(description, DBNull.Value))
+                cmd.Parameters.AddWithValue("@descripcion", If(description IsNot Nothing, CType(description, Object), DBNull.Value))
                 cmd.Parameters.AddWithValue("@cover", "/song/default.png")
                 cmd.Parameters.AddWithValue("@track", trackId)
                 cmd.Parameters.AddWithValue("@duracion", duration)
@@ -977,7 +979,7 @@ Module Program
                     End Using
 
                     ' Guardar nueva imagen y obtener ruta
-                    Dim newCoverPath As String = SaveBase64Image(songData("cover").GetString(), "song", songId)
+                    Dim newCoverPath As String = SaveBase64Image(songData("cover").GetString(), "song", CInt(songId))
                     If newCoverPath IsNot Nothing Then
                         updates.Add("cover = @cover")
                         cmd.Parameters.AddWithValue("@cover", newCoverPath)
@@ -1128,7 +1130,7 @@ Module Program
             Dim newAlbumId As Integer
             Using cmd = db.CreateCommand("INSERT INTO albumes (titulo, descripcion, cover, fechalanzamiento, precio, precioauto) VALUES (@titulo, @descripcion, @cover, @fecha, @precio, @precioauto) RETURNING idalbum")
                 cmd.Parameters.AddWithValue("@titulo", title)
-                cmd.Parameters.AddWithValue("@descripcion", If(description, DBNull.Value))
+                cmd.Parameters.AddWithValue("@descripcion", If(description IsNot Nothing, CType(description, Object), DBNull.Value))
                 cmd.Parameters.AddWithValue("@cover", "/album/default.png")
                 cmd.Parameters.AddWithValue("@fecha", Date.Parse(releaseDate))
                 cmd.Parameters.AddWithValue("@precio", price)
@@ -1553,7 +1555,7 @@ Module Program
                     End Using
 
                     ' Guardar nueva imagen y obtener ruta
-                    Dim newCoverPath As String = SaveBase64Image(albumData("cover").GetString(), "album", albumId)
+                    Dim newCoverPath As String = SaveBase64Image(albumData("cover").GetString(), "album", CInt(albumId))
                     If newCoverPath IsNot Nothing Then
                         updates.Add("cover = @cover")
                         cmd.Parameters.AddWithValue("@cover", newCoverPath)
@@ -2018,7 +2020,7 @@ Module Program
                     End Using
 
                     ' Guardar nueva imagen y obtener ruta
-                    Dim newCoverPath As String = SaveBase64Image(merchData("cover").GetString(), "merch", merchId)
+                    Dim newCoverPath As String = SaveBase64Image(merchData("cover").GetString(), "merch", CInt(merchId))
                     If newCoverPath IsNot Nothing Then
                         updates.Add("cover = @cover")
                         cmd.Parameters.AddWithValue("@cover", newCoverPath)
@@ -2112,7 +2114,7 @@ Module Program
                 cmd.Parameters.AddWithValue("@bio", biography)
                 cmd.Parameters.AddWithValue("@fecha", Date.Parse(registrationDate))
                 cmd.Parameters.AddWithValue("@email", artisticEmail)
-                cmd.Parameters.AddWithValue("@socialmediaurl", If(socialMediaUrl, DBNull.Value))
+                cmd.Parameters.AddWithValue("@socialmediaurl", If(socialMediaUrl IsNot Nothing, CType(socialMediaUrl, Object), DBNull.Value))
                 cmd.Parameters.AddWithValue("@userid", userId)
                 newArtistId = CInt(cmd.ExecuteScalar())
             End Using
@@ -2504,7 +2506,7 @@ Module Program
                     End Using
 
                     ' Guardar nueva imagen y obtener ruta
-                    Dim newImagePath As String = SaveBase64Image(artistData("artisticImage").GetString(), "artist", artistId)
+                    Dim newImagePath As String = SaveBase64Image(artistData("artisticImage").GetString(), "artist", CInt(artistId))
                     If newImagePath IsNot Nothing Then
                         updates.Add("imagen = @imagen")
                         cmd.Parameters.AddWithValue("@imagen", newImagePath)
